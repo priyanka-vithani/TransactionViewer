@@ -1,0 +1,94 @@
+//
+//  TransactionDetailView.swift
+//  TransactionViewer
+//
+//  Created by Priyanka Vithani on 31/01/26.
+//
+
+import SwiftUI
+
+struct TransactionDetailView: View {
+    var transaction:Transaction
+    @Environment(\.dismiss) var dismiss
+    var body: some View {
+        ZStack{
+            Color(.systemBackground).ignoresSafeArea()
+            VStack{
+                titleView.padding()
+                detailsView
+                
+                Spacer().frame(height: 25)
+                ExpandableCardView().padding()
+                
+                Spacer()
+                closeButton.padding()
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color(.systemGray6))
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .overlay(content: {
+                RoundedRectangle(cornerRadius: 16).stroke(Color(.systemGray3), lineWidth: 1)
+            })
+            .shadow(color: Color(.systemGray).opacity(0.3), radius: 5, x: 0, y: 2)
+            .padding()
+            .navigationTitle("Transaction Details")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden()
+        }
+        
+        
+        
+    }
+    // Transaction type + icon
+    var titleView: some View {
+        VStack{
+            if transaction.type == .debit{
+                Image("success-icon")
+                    .resizable().scaledToFit().frame(height: 50).foregroundStyle(.red)
+            }else{
+                Image("success-icon").resizable().scaledToFit().frame(height: 50).foregroundStyle(.green)
+            }
+            
+            Text(transaction.type == .credit ? "Credit Transaction" : "Debit Transaction").font(.title)
+        }
+    }
+    // Transaction details
+    var detailsView: some View{
+        
+        var text = AttributedString(transaction.fromAccount)
+        var accNumSuffix = AttributedString(" (\(transaction.fromCardNumber.suffix(4)))")
+        accNumSuffix.foregroundColor = .gray
+        text += accNumSuffix
+        return VStack(alignment: .leading){
+            Text("From").foregroundStyle(.secondary).font(.subheadline)
+            Text(text)
+            Divider()
+            Text("Amount").foregroundStyle(.secondary).font(.subheadline)
+            Text(transaction.amount.value, format: .currency(code: transaction.amount.currency))
+        }.padding()
+    }
+    // Close button
+    var closeButton: some View{
+        
+        Button {
+            dismiss()
+        } label: {
+            Text("Close")
+                .frame(maxWidth: .infinity)
+                .padding()
+                .foregroundStyle(.white)
+                .background(.red)
+            
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .font(.headline).bold()
+        
+        
+    }
+    
+}
+
+#Preview {
+    @Previewable @State var transaction = Transaction(id: "kDk81_4xGkWW_vOVP_ExwK7GVUlzQ5YtYcuZARHuAQg=", type: .debit, merchantName: "Mb - Cash Advance To - 1785", description: "Bill payment", amount: Amount(value: 200.20, currency: "CAD"), postedDate: "2025-12-23", fromAccount: "Momentum Regular Visa", fromCardNumber: "4537350001688012")
+    TransactionDetailView(transaction: transaction)
+}
