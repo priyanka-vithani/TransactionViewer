@@ -8,20 +8,31 @@
 import SwiftUI
 
 struct TransactionDetailView: View {
-    var transaction:Transaction
+    @StateObject private var viewModel: TransactionDetailViewModel
     @Environment(\.dismiss) var dismiss
+    
+    init(transaction: Transaction) {
+        _viewModel = StateObject(
+            wrappedValue: TransactionDetailViewModel(transaction: transaction)
+        )
+    }
+    
     var body: some View {
         ZStack{
             Color(.systemBackground).ignoresSafeArea()
             VStack{
-                titleView.padding()
+                titleView
+                    .padding()
                 detailsView
                 
-                Spacer().frame(height: 25)
-                ExpandableCardView().padding()
+                Spacer()
+                    .frame(height: 25)
+                ExpandableCardView()
+                    .padding()
                 
                 Spacer()
-                closeButton.padding()
+                closeButton
+                    .padding()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(.systemGray6))
@@ -42,29 +53,25 @@ struct TransactionDetailView: View {
     // Transaction type + icon
     var titleView: some View {
         VStack{
-            if transaction.type == .debit{
-                Image("success-icon")
-                    .resizable().scaledToFit().frame(height: 50).foregroundStyle(.red)
-            }else{
-                Image("success-icon").resizable().scaledToFit().frame(height: 50).foregroundStyle(.green)
-            }
+            Image("success-icon")
+                .foregroundColor(viewModel.iconColor)
             
-            Text(transaction.type == .credit ? "Credit Transaction" : "Debit Transaction").font(.title)
+            Text(viewModel.title)
+                .font(.title)
         }
     }
     // Transaction details
     var detailsView: some View{
-        
-        var text = AttributedString(transaction.fromAccount)
-        var accNumSuffix = AttributedString(" (\(transaction.fromCardNumber.suffix(4)))")
-        accNumSuffix.foregroundColor = .gray
-        text += accNumSuffix
         return VStack(alignment: .leading){
-            Text("From").foregroundStyle(.secondary).font(.subheadline)
-            Text(text)
+            Text("From")
+                .foregroundStyle(.secondary)
+                .font(.subheadline)
+            Text(viewModel.formattedFromAccount)
             Divider()
-            Text("Amount").foregroundStyle(.secondary).font(.subheadline)
-            Text(transaction.amount.value, format: .currency(code: transaction.amount.currency))
+            Text("Amount")
+                .foregroundStyle(.secondary)
+                .font(.subheadline)
+            Text(viewModel.formattedAmount)
         }.padding()
     }
     // Close button
@@ -81,14 +88,13 @@ struct TransactionDetailView: View {
             
         }
         .clipShape(RoundedRectangle(cornerRadius: 8))
-        .font(.headline).bold()
-        
-        
+        .font(.headline)
+        .bold()
     }
     
 }
 
 #Preview {
-    @Previewable @State var transaction = Transaction(id: "kDk81_4xGkWW_vOVP_ExwK7GVUlzQ5YtYcuZARHuAQg=", type: .debit, merchantName: "Mb - Cash Advance To - 1785", description: "Bill payment", amount: Amount(value: 200.20, currency: "CAD"), postedDate: "2025-12-23", fromAccount: "Momentum Regular Visa", fromCardNumber: "4537350001688012")
+    @Previewable @State var transaction = Transaction(id: "kDk81_4xGkWW_vOVP_ExwK7GVUlzQ5YtYcuZARHuAQg=", type: .debit, merchantName: "Mb - Cash Advance To - 1785", description: "Bill payment", amount: Amount(value: 200.20, currency: "CAD"), postedDate: Date(), fromAccount: "Momentum Regular Visa", fromCardNumber: "4537350001688012")
     TransactionDetailView(transaction: transaction)
 }

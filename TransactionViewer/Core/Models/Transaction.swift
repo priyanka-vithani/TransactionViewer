@@ -2,31 +2,48 @@
 //  Transaction.swift
 //  TransactionViewer
 //
-//  Created by Priyanka Vithani on 30/01/26.
+//  Created by Priyanka Vithani on 11/02/26.
 //
 
 import Foundation
-struct TransactionResponse:Decodable{
-    let transactions:[Transaction]
+import SwiftUI
+struct TransactionResponse<Data: Decodable>: Decodable {
+    let transactions: Data
 }
 enum TransactionType: String, Decodable {
     case debit = "DEBIT"
     case credit = "CREDIT"
+    
+    var displayTitle: String {
+        switch self {
+        case .credit: return "Credit Transaction"
+        case .debit: return "Debit Transaction"
+        }
+    }
+    
+    var iconColor: Color {
+        switch self {
+        case .credit: return .green
+        case .debit: return .red
+        }
+    }
 }
-struct Amount: Decodable {
+struct Amount: Decodable, Hashable {
     let value: Double
     let currency: String
 }
-struct Transaction: Decodable, Identifiable {
+struct Transaction: Decodable, Identifiable, Hashable {
+   
+    
     let id: String
     let type: TransactionType
     let merchantName: String
     let description: String?
     let amount: Amount
-    let postedDate: String
+    let postedDate: Date
     let fromAccount: String
     let fromCardNumber: String
-
+    
     enum CodingKeys: String, CodingKey {
         case id = "key"
         case type = "transaction_type"
@@ -36,5 +53,8 @@ struct Transaction: Decodable, Identifiable {
         case postedDate = "posted_date"
         case fromAccount = "from_account"
         case fromCardNumber = "from_card_number"
+    }
+    static func == (lhs: Transaction, rhs: Transaction) -> Bool {
+        return lhs.id == rhs.id
     }
 }
