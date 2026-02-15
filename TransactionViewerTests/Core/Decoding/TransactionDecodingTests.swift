@@ -9,25 +9,17 @@ import XCTest
 @testable import TransactionViewer
 
 @MainActor
-final class DecodingTests: XCTestCase {
+final class TransactionDecodingTests: XCTestCase {
 
-    func testTransactionDecodesDateCorrectly() throws {
-        let json = """
-        {
-            "transactions": [
-                {
-                    "key": "1",
-                    "transaction_type": "DEBIT",
-                    "merchant_name": "Test",
-                    "description": "Desc",
-                    "amount": { "value": 10.0, "currency": "CAD" },
-                    "posted_date": "2021-05-31",
-                    "from_account": "Visa",
-                    "from_card_number": "1234567812345678"
-                }
-            ]
+    func test_TC01_decodeValidJSON_success() throws {
+        // Given
+        let bundle = Bundle(for: Self.self)
+        guard let url = bundle.url(forResource: "transaction-list", withExtension: "json") else {
+            XCTFail("Missing JSON file")
+            return
         }
-        """.data(using: .utf8)!
+
+        let data = try Data(contentsOf: url)
 
         let decoder = JSONDecoder()
         let formatter = DateFormatter()
@@ -35,9 +27,63 @@ final class DecodingTests: XCTestCase {
         formatter.locale = Locale(identifier: "en_US_POSIX")
         decoder.dateDecodingStrategy = .formatted(formatter)
 
-        let response = try decoder.decode(TransactionResponse.self, from: json)
+        // When
+        let response = try decoder.decode(TransactionResponse.self, from: data)
 
-        XCTAssertEqual(response.transactions.count, 1)
+        // Then
+        XCTAssertEqual(response.transactions.count, 3)
+        XCTAssertEqual(response.transactions.first?.type, .debit)
+        XCTAssertEqual(response.transactions.last?.type, .credit)
+
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month, .day],
+                                                 from: response.transactions.first!.postedDate)
+
+        XCTAssertEqual(components.year, 2021)
+        XCTAssertEqual(components.month, 5)
+        XCTAssertEqual(components.day, 31)
     }
-}
+    func test_TC02_invalidDateFormat_shouldThrow() {
+        let json = """
+        {
+          "transactions": [{
+            "key": "1",
+            "transaction_type": "DEBIT",
+            "merchant_name": "Test",
+            "amount": { "value": 10, "currency": "CAD" },
+            "posted_date": "31-05-2021",
+            "from_account": "Visa",
+            "from_card_number": "1234"
+          }]
+        }
+        """
 
+        let data = Data(json.utf8)
+
+        let decoder = JSONDecoder()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        decoder.dateDecodingStrategy = .formatted(formatter)
+
+        XCTAssertThrowsError(try decoder.decode(TransactionResponse.self, from: data))
+    }
+    func test_TC03_missingDescription_shouldBeNil() throws {
+        let bundle = Bundle(for: Self.self)
+        let url = bundle.url(forResource: "transaction-list", withExtension: "json")!
+        let data = try Data(contentsOf: url)
+
+        let decoder = JSONDecoder()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        decoder.dateDecodingStrategy = .formatted(formatter)
+
+        let response = try decoder.decode(TransactionResponse.self, from: data)
+
+        let secondTransaction = response.transactions[1]
+
+        XCTAssertNil(secondTransaction.description)
+    }
+
+}

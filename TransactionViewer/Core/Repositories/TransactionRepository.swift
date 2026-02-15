@@ -6,7 +6,11 @@
 //
 
 import Foundation
-final class TransactionRepository {
+protocol TransactionRepositoryProtocol {
+    func fetchTransactions() async throws -> [Transaction]
+}
+
+final class TransactionRepository:  TransactionRepositoryProtocol{
     private let network: NetworkProtocol
 
     init(network: NetworkProtocol) {

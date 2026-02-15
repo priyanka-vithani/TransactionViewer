@@ -6,30 +6,45 @@
 //
 
 import XCTest
+@testable import TransactionViewer
+internal import SwiftUI
+final class TransactionMapperTests: XCTestCase {
+    func test_TC13_debitTransactionMapping() {
+        let transaction = MockTransactionFactory.make(type: .debit)
 
-final class TransactionRowMapperTests: XCTestCase {
+        let mapper = TransactionRowMapper()
+        let ui = mapper.map(transaction)
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        XCTAssertEqual(ui.iconColor.description, Color.red.description)
+        XCTAssertEqual(ui.maskedCardNumber, "**** 8012")
     }
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    func test_TC14_creditTransactionMapping() {
+        let transaction = MockTransactionFactory.make(type: .credit)
+
+        let mapper = TransactionRowMapper()
+        let ui = mapper.map(transaction)
+
+        XCTAssertEqual(ui.iconColor, Color.green)
+    }
+    func test_TC15_creditIconColorDetail() {
+        let mapper = TransactionDetailMapper()
+        let ui = mapper.map(MockTransactionFactory.make(type: .credit))
+        XCTAssertEqual(ui.iconColor, Color.green)
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    func test_TC16_debitIconColorDetail() {
+        let mapper = TransactionDetailMapper()
+        let ui = mapper.map(MockTransactionFactory.make(type: .debit))
+        XCTAssertEqual(ui.iconColor, Color.red)
     }
 
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
+    func test_TC17_formattedFromAccountContainsMaskedDigits() {
+        let mapper = TransactionDetailMapper()
+        let ui = mapper.map(MockTransactionFactory.make(type: .debit))
+
+        XCTAssertTrue(ui.formattedFromAccount.description.contains("**** 8012"))
     }
+    
 
 }

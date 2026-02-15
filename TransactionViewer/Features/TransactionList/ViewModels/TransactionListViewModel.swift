@@ -21,11 +21,11 @@ final class TransactionListViewModel: ObservableObject {
     
     @Published private(set) var state: ViewState = .loading
     private let mapper: TransactionRowMapping
-    private let repo: TransactionRepository
+    private let repo: TransactionRepositoryProtocol
     private var transactions: [Transaction] = []
     @Published var selectedTransaction: Transaction?
     
-    init(repo: TransactionRepository, mapper: TransactionRowMapping = TransactionRowMapper()) {
+    init(repo: TransactionRepositoryProtocol, mapper: TransactionRowMapping = TransactionRowMapper()) {
         self.repo = repo
         self.mapper = mapper
     }
