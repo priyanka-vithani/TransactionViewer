@@ -6,15 +6,18 @@
 //
 
 import Foundation
-actor TransactionRepository{
+final class TransactionRepository {
     private let network: NetworkProtocol
+
     init(network: NetworkProtocol) {
         self.network = network
     }
+
     func fetchTransactions() async throws -> [Transaction] {
         try Task.checkCancellation()
-        let response: TransactionResponse<[Transaction]> = try await network.fetchLocal(.fetchLocal)
-        try Task.checkCancellation()
-        return await response.transactions
+        let response: TransactionResponse =
+            try await network.fetchLocal(.fetchLocal)
+        return response.transactions
     }
 }
+

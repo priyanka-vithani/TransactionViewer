@@ -10,33 +10,30 @@ import SwiftUI
 import Combine
 
 final class TransactionDetailViewModel: ObservableObject {
-    private let transaction: Transaction
-    
-    init(transaction: Transaction) {
-        self.transaction = transaction
+
+    private let uiModel: TransactionDetailUIModel
+
+    init(transaction: Transaction,
+         mapper: TransactionDetailMapping = TransactionDetailMapper()) {
+
+        self.uiModel = mapper.map(transaction)
     }
-    
+
     var title: String {
-        transaction.type.displayTitle
+        uiModel.title
     }
-    
+
     var iconColor: Color {
-        transaction.type.iconColor
+        uiModel.iconColor
     }
-    
+
     var formattedFromAccount: AttributedString {
-        var text = AttributedString(transaction.fromAccount)
-        
-        let masked = CardMasking.masked(transaction.fromCardNumber)
-        var suffix = AttributedString(" (\(masked))")
-        suffix.foregroundColor = .gray
-        
-        text += suffix
-        return text
+        uiModel.formattedFromAccount
     }
-    
+
     var formattedAmount: String {
-        AppCurrencyFormatter.string(from: transaction.amount)
+        uiModel.formattedAmount
     }
 }
+
 

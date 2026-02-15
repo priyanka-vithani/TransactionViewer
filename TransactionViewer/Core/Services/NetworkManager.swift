@@ -26,9 +26,11 @@ protocol NetworkProtocol {
 }
 
 extension NetworkProtocol {
-    func fetchLocal<T>(_ endPoint: APIEndPoint) async throws -> T where T : Decodable {
-        try await fetchLocal(endPoint.url ?? URL(fileURLWithPath: ""))
-        
+    func fetchLocal<T>(_ endPoint: APIEndPoint) async throws -> T where T: Decodable {
+        guard let url = endPoint.url else {
+            throw JSONError.fileNotFound("transaction-list.json")
+        }
+        return try await fetchLocal(url)
     }
 }
 
@@ -53,12 +55,8 @@ final class NetworkManager: NetworkProtocol {
     }
     
     func fetchLocal<T>(_ url: URL) async throws -> T where T : Decodable {
-        do {
-            let (data, _) = try await urlSession.data(from: url)
-            return try decoder.decode(T.self, from: data)
-        } catch {
-            throw JSONError.decodingFailed(error)
-        }
+        let data = try Data(contentsOf: url)
+        return try decoder.decode(T.self, from: data)
     }
     
 }

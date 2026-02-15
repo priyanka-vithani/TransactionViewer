@@ -6,9 +6,8 @@
 //
 
 import Foundation
-import SwiftUI
-struct TransactionResponse<Data: Decodable>: Decodable {
-    let transactions: Data
+struct TransactionResponse: Decodable {
+    let transactions: [Transaction]
 }
 enum TransactionType: String, Decodable {
     case debit = "DEBIT"
@@ -18,13 +17,6 @@ enum TransactionType: String, Decodable {
         switch self {
         case .credit: return "Credit Transaction"
         case .debit: return "Debit Transaction"
-        }
-    }
-    
-    var iconColor: Color {
-        switch self {
-        case .credit: return .green
-        case .debit: return .red
         }
     }
 }

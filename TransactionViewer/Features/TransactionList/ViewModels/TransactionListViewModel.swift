@@ -11,7 +11,6 @@ import SwiftUI
 import Foundation
 import SwiftUI
 
-@MainActor
 final class TransactionListViewModel: ObservableObject {
     
     enum ViewState {

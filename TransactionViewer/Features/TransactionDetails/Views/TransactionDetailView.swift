@@ -8,14 +8,16 @@
 import SwiftUI
 
 struct TransactionDetailView: View {
-    @StateObject private var viewModel: TransactionDetailViewModel
     @Environment(\.dismiss) var dismiss
     
-    init(transaction: Transaction) {
-        _viewModel = StateObject(
-            wrappedValue: TransactionDetailViewModel(transaction: transaction)
-        )
-    }
+    @StateObject private var viewModel: TransactionDetailViewModel
+
+       init(transaction: Transaction) {
+           _viewModel = StateObject(
+               wrappedValue: TransactionDetailViewModel(transaction: transaction)
+           )
+       }
+
     
     var body: some View {
         ZStack{
