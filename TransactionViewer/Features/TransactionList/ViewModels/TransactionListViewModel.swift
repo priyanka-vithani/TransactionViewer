@@ -8,27 +8,31 @@
 import Foundation
 import Combine
 import SwiftUI
-import Foundation
-import SwiftUI
-
+// MARK: - Transaction List ViewModel
 final class TransactionListViewModel: ObservableObject {
-    
+    // MARK: - View State
+    // Represents UI rendering states.
+    // Prevents invalid UI combinations (e.g. loading + data together).
     enum ViewState {
         case loading
         case loaded([TransactionRowUIModel])
         case failed(String)
     }
-    
+    // MARK: - Published Properties
     @Published private(set) var state: ViewState = .loading
+    @Published var selectedTransaction: Transaction?
+    // MARK: - Dependencies
     private let mapper: TransactionRowMapping
     private let repo: TransactionRepositoryProtocol
+    // MARK: - Private Storage
     private var transactions: [Transaction] = []
-    @Published var selectedTransaction: Transaction?
     
+    // MARK: - Initializer
     init(repo: TransactionRepositoryProtocol, mapper: TransactionRowMapping = TransactionRowMapper()) {
         self.repo = repo
         self.mapper = mapper
     }
+    // MARK: - Public Methods
     func load() async {
         if case .loaded = state { return }
         
@@ -55,18 +59,5 @@ final class TransactionListViewModel: ObservableObject {
     func reload() async {
         state = .loading
         await load()
-    }
-    
-    private func mapToRowUIModel(_ transaction: Transaction) -> TransactionRowUIModel {
-        return TransactionRowUIModel(
-            id: transaction.id,
-            merchantName: transaction.merchantName,
-            description: transaction.description ?? "",
-            formattedAmount: AppCurrencyFormatter.string(from: transaction.amount),
-            iconColor: transaction.type == .debit ? .red : .green,
-            formattedDate: AppDateFormatter.display.string(from: transaction.postedDate),
-            fromAccount: transaction.fromAccount,
-            maskedCardNumber: CardMasking.masked(transaction.fromCardNumber)
-        )
     }
 }

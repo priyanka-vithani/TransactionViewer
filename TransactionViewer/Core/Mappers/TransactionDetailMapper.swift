@@ -7,20 +7,24 @@
 
 import Foundation
 import SwiftUI
+
+// MARK: - Detail Mapping Protocol
 protocol TransactionDetailMapping {
     func map(_ transaction: Transaction) -> TransactionDetailUIModel
 }
 
+// MARK: - Detail Mapper
 struct TransactionDetailMapper: TransactionDetailMapping {
-    
+    // MARK: - Public Mapping
      func map(_ transaction: Transaction) -> TransactionDetailUIModel {
-         
          TransactionDetailUIModel(
             title: transaction.merchantName,
-            iconColor: iconColor(for: transaction.type),
+            iconColor: transaction.type.iconColor,
             formattedFromAccount: formattedFromAccount(transaction: transaction),
             formattedAmount: AppCurrencyFormatter.string(from: transaction.amount))
     }
+    
+    // MARK: - Private Helpers
     private func formattedFromAccount(transaction:Transaction) -> AttributedString {
         var text = AttributedString(transaction.fromAccount)
         
@@ -30,13 +34,5 @@ struct TransactionDetailMapper: TransactionDetailMapping {
         
         text += suffix
         return text
-    }
-    private func iconColor(for type: TransactionType) -> Color {
-        switch type {
-        case .debit:
-            return .red
-        case .credit:
-            return .green
-        }
     }
 }

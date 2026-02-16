@@ -6,7 +6,10 @@
 //
 
 import SwiftUI
+// MARK: - Dependency Injection Container
 enum DI {
+    // Simple dependency container.
+    // Allows swapping implementations (e.g. mock network) without changing feature code.
     static let networkManager: NetworkProtocol = NetworkManager()
     static let transRepo:TransactionRepository = TransactionRepository(network: networkManager)
     
@@ -17,6 +20,7 @@ enum DI {
     }
 }
 
+// MARK: - App Entry Point
 @main
 struct TransactionViewerApp: App {
     var body: some Scene {

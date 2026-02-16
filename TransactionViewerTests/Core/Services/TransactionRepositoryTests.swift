@@ -9,6 +9,7 @@ import XCTest
 import XCTest
 @testable import TransactionViewer
 
+@MainActor
 final class TransactionRepositoryTests: XCTestCase {
 
     func test_TC04_repositoryReturnsTransactions() async throws {

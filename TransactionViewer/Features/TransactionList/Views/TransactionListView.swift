@@ -6,16 +6,17 @@
 //
 
 import SwiftUI
+// MARK: - Transaction List View
 struct TransactionListView: View {
-    
+    // MARK: - State
     @StateObject private var viewModel: TransactionListViewModel
-    
+    // MARK: - Initializer
     init(repo: TransactionRepository) {
         _viewModel = StateObject(
             wrappedValue: TransactionListViewModel(repo: repo)
         )
     }
-    
+    // MARK: - Body
     var body: some View {
         NavigationStack {
             content
@@ -32,7 +33,7 @@ struct TransactionListView: View {
                 }
         }
     }
-    
+    // MARK: - View Builder
     @ViewBuilder
     private var content: some View {
         switch viewModel.state {

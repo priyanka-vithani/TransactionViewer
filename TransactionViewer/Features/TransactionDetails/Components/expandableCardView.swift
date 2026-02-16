@@ -6,11 +6,13 @@
 //
 
 import SwiftUI
-
+// MARK: - Expandable Tooltip View
+// Handles its own expanded/collapsed state and animation.
 struct ExpandableCardView: View {
-    
+    // MARK: - State
+
     @State private var isExpanded = false
-    
+    // MARK: - Body
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             Image("buddy-tip-icon")
@@ -34,6 +36,7 @@ struct ExpandableCardView: View {
                 .stroke(Color.secondary.opacity(0.5), lineWidth: 1)
         }
     }
+    // MARK: - Computed Properties
     // Generates dynamic attributed string based on expanded state
     private var attributedText: AttributedString {
         var text = AttributedString(

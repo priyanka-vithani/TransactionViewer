@@ -6,9 +6,12 @@
 //
 
 import Foundation
+
+// MARK: - Response Model
 struct TransactionResponse: Decodable {
     let transactions: [Transaction]
 }
+// MARK: - Transaction Type
 enum TransactionType: String, Decodable {
     case debit = "DEBIT"
     case credit = "CREDIT"
@@ -20,13 +23,14 @@ enum TransactionType: String, Decodable {
         }
     }
 }
+// MARK: - Amount Model
 struct Amount: Decodable, Hashable {
     let value: Double
     let currency: String
 }
+// MARK: - Transaction Model
 struct Transaction: Decodable, Identifiable, Hashable {
-   
-    
+    // MARK: - Properties
     let id: String
     let type: TransactionType
     let merchantName: String
@@ -35,7 +39,7 @@ struct Transaction: Decodable, Identifiable, Hashable {
     let postedDate: Date
     let fromAccount: String
     let fromCardNumber: String
-    
+    // MARK: - Coding Keys
     enum CodingKeys: String, CodingKey {
         case id = "key"
         case type = "transaction_type"
@@ -46,6 +50,7 @@ struct Transaction: Decodable, Identifiable, Hashable {
         case fromAccount = "from_account"
         case fromCardNumber = "from_card_number"
     }
+    // MARK: - Equatable
     static func == (lhs: Transaction, rhs: Transaction) -> Bool {
         return lhs.id == rhs.id
     }

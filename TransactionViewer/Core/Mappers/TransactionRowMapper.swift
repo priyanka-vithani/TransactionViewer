@@ -7,32 +7,26 @@
 
 import Foundation
 import SwiftUI
+
+// MARK: - Row Mapping Protocol
 protocol TransactionRowMapping {
     func map(_ transaction: Transaction) -> TransactionRowUIModel
 }
-
+// MARK: - Row Mapper
+// Converts domain model into UI-specific representation.
+// Keeps formatting and UI logic out of View and ViewModel.
 struct TransactionRowMapper: TransactionRowMapping {
-    
+    // MARK: - Public Mapping
      func map(_ transaction: Transaction) -> TransactionRowUIModel {
-        
         TransactionRowUIModel(
             id: transaction.id,
             merchantName: transaction.merchantName,
             description: transaction.description ?? "",
             formattedAmount: AppCurrencyFormatter.string(from: transaction.amount),
-            iconColor: iconColor(for: transaction.type),
+            iconColor: transaction.type.iconColor,
             formattedDate: AppDateFormatter.display.string(from: transaction.postedDate),
             fromAccount: transaction.fromAccount,
             maskedCardNumber: CardMasking.masked(transaction.fromCardNumber)
         )
-    }
-    
-    private func iconColor(for type: TransactionType) -> Color {
-        switch type {
-        case .debit:
-            return .red
-        case .credit:
-            return .green
-        }
     }
 }

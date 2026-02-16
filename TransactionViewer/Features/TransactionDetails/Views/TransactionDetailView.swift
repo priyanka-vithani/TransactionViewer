@@ -6,19 +6,21 @@
 //
 
 import SwiftUI
-
+// MARK: - Transaction Detail View
 struct TransactionDetailView: View {
-    @Environment(\.dismiss) var dismiss
     
-    @StateObject private var viewModel: TransactionDetailViewModel
 
+    // MARK: - Environment
+    @Environment(\.dismiss) var dismiss
+    // MARK: - State
+    @StateObject private var viewModel: TransactionDetailViewModel
+    // MARK: - Initializer
        init(transaction: Transaction) {
            _viewModel = StateObject(
                wrappedValue: TransactionDetailViewModel(transaction: transaction)
            )
        }
-
-    
+    // MARK: - Body
     var body: some View {
         ZStack{
             Color(.systemBackground).ignoresSafeArea()
@@ -26,12 +28,10 @@ struct TransactionDetailView: View {
                 titleView
                     .padding()
                 detailsView
-                
                 Spacer()
                     .frame(height: 25)
                 ExpandableCardView()
                     .padding()
-                
                 Spacer()
                 closeButton
                     .padding()
@@ -48,10 +48,8 @@ struct TransactionDetailView: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden()
         }
-        
-        
-        
     }
+    // MARK: - View Components
     // Transaction type + icon
     var titleView: some View {
         VStack{
