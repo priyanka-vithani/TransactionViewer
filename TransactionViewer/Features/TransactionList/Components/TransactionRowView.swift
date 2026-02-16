@@ -6,11 +6,17 @@
 //
 
 import SwiftUI
+
 // MARK: - Transaction Row View
+
 struct TransactionRowView: View {
+    
     // MARK: - Properties
+    
     var transaction: TransactionRowUIModel
+    
     // MARK: - Body
+    
     var body: some View {
         HStack(alignment: .firstTextBaseline){
             Image(systemName: "checkmark.circle.fill")

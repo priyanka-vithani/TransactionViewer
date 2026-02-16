@@ -9,13 +9,17 @@ import Foundation
 import SwiftUI
 
 // MARK: - Row Mapping Protocol
+
 protocol TransactionRowMapping {
     func map(_ transaction: Transaction) -> TransactionRowUIModel
 }
+
 // MARK: - Row Mapper
 // Converts domain model into UI-specific representation.
 // Keeps formatting and UI logic out of View and ViewModel.
+
 struct TransactionRowMapper: TransactionRowMapping {
+    
     // MARK: - Public Mapping
      func map(_ transaction: Transaction) -> TransactionRowUIModel {
         TransactionRowUIModel(

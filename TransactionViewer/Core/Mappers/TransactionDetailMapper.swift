@@ -9,30 +9,35 @@ import Foundation
 import SwiftUI
 
 // MARK: - Detail Mapping Protocol
+
 protocol TransactionDetailMapping {
     func map(_ transaction: Transaction) -> TransactionDetailUIModel
 }
 
 // MARK: - Detail Mapper
+
 struct TransactionDetailMapper: TransactionDetailMapping {
+    
     // MARK: - Public Mapping
+    
      func map(_ transaction: Transaction) -> TransactionDetailUIModel {
          TransactionDetailUIModel(
-            title: transaction.merchantName,
+            type: transaction.type,
             iconColor: transaction.type.iconColor,
             formattedFromAccount: formattedFromAccount(transaction: transaction),
             formattedAmount: AppCurrencyFormatter.string(from: transaction.amount))
     }
     
     // MARK: - Private Helpers
+    
     private func formattedFromAccount(transaction:Transaction) -> AttributedString {
         var text = AttributedString(transaction.fromAccount)
-        
-        let masked = CardMasking.masked(transaction.fromCardNumber)
+        let masked = CardMasking.getLastNDigitOfCardNumber(transaction.fromCardNumber)
         var suffix = AttributedString(" (\(masked))")
-        suffix.foregroundColor = .gray
         
+        suffix.foregroundColor = .gray
         text += suffix
+        
         return text
     }
 }

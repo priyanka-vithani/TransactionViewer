@@ -7,10 +7,14 @@
 
 import Foundation
 import SwiftUI
+
 // MARK: - Transaction Detail UI Model
+
 struct TransactionDetailUIModel {
+    
     // MARK: - Properties
-    let title: String
+    
+    let type: TransactionType
     let iconColor: Color
     let formattedFromAccount: AttributedString
     let formattedAmount: String

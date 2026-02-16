@@ -11,6 +11,11 @@ import XCTest
 
 @MainActor
 final class TransactionRepositoryTests: XCTestCase {
+    
+    /// TC-04
+    /// Verifies that TransactionRepository returns
+    /// successfully decoded transactions when the network layer succeeds.
+    /// Ensures correct propagation of decoded data.
 
     func test_TC04_repositoryReturnsTransactions() async throws {
         let mock = MockNetwork()
@@ -34,6 +39,12 @@ final class TransactionRepositoryTests: XCTestCase {
 
         XCTAssertEqual(transactions.count, 1)
     }
+    
+    /// TC-05
+    /// Ensures that errors from the network layer
+    /// are propagated without being swallowed.
+    /// Confirms repository does not silently fail.
+
     func test_TC05_repositoryPropagatesError() async {
         let mock = MockNetwork()
         mock.result = .failure(JSONError.fileNotFound("file"))
@@ -47,6 +58,12 @@ final class TransactionRepositoryTests: XCTestCase {
             XCTAssertTrue(error is JSONError)
         }
     }
+    
+    /// TC-06
+    /// Validates that task cancellation is respected.
+    /// Ensures fetchTransactions does not proceed
+    /// when the parent task has been cancelled.
+
     func test_TC06_taskCancellationStopsExecution() async {
         let mock = MockNetwork()
 
@@ -67,6 +84,12 @@ final class TransactionRepositoryTests: XCTestCase {
             XCTAssertTrue(error is CancellationError)
         }
     }
+    
+    /// TC-07
+    /// Verifies currency formatting for CAD values.
+    /// Ensures NumberFormatter returns a properly
+    /// formatted currency string based on locale.
+
     func test_TC07_currencyFormattingCAD() {
         let amount = Amount(value: 200.2, currency: "CAD")
 
@@ -74,6 +97,11 @@ final class TransactionRepositoryTests: XCTestCase {
 
         XCTAssertTrue(result.contains("200"))
     }
+    
+    /// TC-08
+    /// Ensures unknown currency codes do not crash the formatter.
+    /// Confirms fallback behavior returns a safe string representation.
+
     func test_TC08_unknownCurrencyFallback() {
         let amount = Amount(value: 10, currency: "XYZ")
 
@@ -81,6 +109,11 @@ final class TransactionRepositoryTests: XCTestCase {
 
         XCTAssertFalse(result.isEmpty)
     }
+    
+    /// TC-09
+    /// Validates display date formatting using AppDateFormatter.
+    /// Ensures consistent medium-style date output.
+
     func test_TC09_dateDisplayFormatting() {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"

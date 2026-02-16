@@ -8,19 +8,27 @@
 import Foundation
 import SwiftUI
 import Combine
+
 // MARK: - Transaction Detail ViewModel
+
 final class TransactionDetailViewModel: ObservableObject {
+    
     // MARK: - Properties
+    
     private let uiModel: TransactionDetailUIModel
+    
     // MARK: - Initializer
+    
     init(transaction: Transaction,
          mapper: TransactionDetailMapping = TransactionDetailMapper()) {
 
         self.uiModel = mapper.map(transaction)
     }
+    
     // MARK: - Exposed UI Properties
-    var title: String {
-        uiModel.title
+    
+    var transactionType: String {
+        uiModel.type.displayTitle.capitalized
     }
 
     var iconColor: Color {

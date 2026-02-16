@@ -6,21 +6,29 @@
 //
 
 import SwiftUI
+
 // MARK: - Transaction Detail View
+
 struct TransactionDetailView: View {
     
-
     // MARK: - Environment
+    
     @Environment(\.dismiss) var dismiss
+    
     // MARK: - State
+    
     @StateObject private var viewModel: TransactionDetailViewModel
+    
     // MARK: - Initializer
+    
        init(transaction: Transaction) {
            _viewModel = StateObject(
                wrappedValue: TransactionDetailViewModel(transaction: transaction)
            )
        }
+    
     // MARK: - Body
+    
     var body: some View {
         ZStack{
             Color(.systemBackground).ignoresSafeArea()
@@ -31,6 +39,7 @@ struct TransactionDetailView: View {
                 Spacer()
                     .frame(height: 25)
                 ExpandableCardView()
+                    .shadow(color: Color(.systemGray3), radius: 10)
                     .padding()
                 Spacer()
                 closeButton
@@ -45,18 +54,21 @@ struct TransactionDetailView: View {
             .shadow(color: Color(.systemGray).opacity(0.3), radius: 5, x: 0, y: 2)
             .padding()
             .navigationTitle("Transaction Details")
-            .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden()
+            .toolbarBackground(Color(.systemGray6), for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+
         }
     }
+    
     // MARK: - View Components
+    
     // Transaction type + icon
     var titleView: some View {
         VStack{
             Image("success-icon")
-                .foregroundColor(viewModel.iconColor)
-            
-            Text(viewModel.title)
+                .foregroundColor(viewModel.iconColor)        
+            Text(viewModel.transactionType)
                 .font(.title)
         }
     }
@@ -76,7 +88,6 @@ struct TransactionDetailView: View {
     }
     // Close button
     var closeButton: some View{
-        
         Button {
             dismiss()
         } label: {
@@ -91,7 +102,6 @@ struct TransactionDetailView: View {
         .font(.headline)
         .bold()
     }
-    
 }
 
 #Preview {

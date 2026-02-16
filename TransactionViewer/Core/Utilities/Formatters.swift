@@ -6,7 +6,9 @@
 //
 
 import Foundation
+
 // MARK: - Date Formatter
+
 enum AppDateFormatter {
     static let display: DateFormatter = {
         let formatter = DateFormatter()
@@ -15,17 +17,25 @@ enum AppDateFormatter {
         return formatter
     }()
 }
+
 // MARK: - Currency Formatter
+
 enum AppCurrencyFormatter {
+    
     // MARK: - Cache
+    
     private static var cache: [String: NumberFormatter] = [:]
+    
     // MARK: - Public API
+    
     static func string(from amount: Amount) -> String {
         let formatter = formatter(for: amount.currency)
         return formatter.string(from: NSNumber(value: amount.value))
             ?? "\(amount.value)"
     }
+    
     // MARK: - Private Helpers
+    
     private static func formatter(for currency: String) -> NumberFormatter {
         if let existing = cache[currency] {
             return existing
@@ -40,9 +50,13 @@ enum AppCurrencyFormatter {
         return formatter
     }
 }
+
 // MARK: - Card Masking Utility
+
 enum CardMasking {
+    
     // MARK: - Public API
+    
     static func masked(
         _ cardNumber: String,
         visibleDigits: Int = 4,
@@ -59,5 +73,14 @@ enum CardMasking {
         let maskedPart = String(repeating: maskSymbol, count: 4)
         
         return "\(maskedPart) \(lastDigits)"
+    }
+    
+    static func getLastNDigitOfCardNumber(
+        _ cardNumber: String,
+        visibleDigits: Int = 4
+    ) -> String {
+        let trimmed = cardNumber.trimmingCharacters(in: .whitespacesAndNewlines)
+        let lastDigits = trimmed.suffix(visibleDigits)
+        return "\(lastDigits)"
     }
 }

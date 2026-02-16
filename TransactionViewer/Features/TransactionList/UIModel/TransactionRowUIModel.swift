@@ -7,9 +7,13 @@
 
 import Foundation
 import SwiftUI
+
 // MARK: - Transaction Row UI Model
+
 struct TransactionRowUIModel: Identifiable {
+    
     // MARK: - Properties
+    
     let id: String
     let merchantName: String
     let description: String

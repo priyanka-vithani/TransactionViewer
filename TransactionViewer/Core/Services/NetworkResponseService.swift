@@ -7,19 +7,23 @@
 
 import Foundation
 
-
 // MARK: - HTTP Response Description Protocol
 /// Protocol for describing HTTP response errors
+///
 protocol HTTPResponseDescribable {
     var description: String { get }
 }
+
 // MARK: - JSON Errors
+
 enum JSONError: Error, HTTPResponseDescribable {
     
     case fileNotFound(String)
     case dataCorrupted
     case decodingFailed(Error)
+    
     // MARK: - Error Description
+    
     var description: String {
         switch self {
         case .fileNotFound(let filename):

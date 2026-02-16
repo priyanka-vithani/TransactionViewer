@@ -6,34 +6,42 @@
 //
 
 import SwiftUI
+
 // MARK: - Transaction List View
+
 struct TransactionListView: View {
+    
     // MARK: - State
+    
     @StateObject private var viewModel: TransactionListViewModel
+    
     // MARK: - Initializer
+    
     init(repo: TransactionRepository) {
         _viewModel = StateObject(
             wrappedValue: TransactionListViewModel(repo: repo)
         )
     }
+    
     // MARK: - Body
+    
     var body: some View {
-        NavigationStack {
-            content
-                .navigationTitle("Transactions")
-                .navigationDestination(
-                    item: $viewModel.selectedTransaction
-                ) { transaction in
-                    TransactionDetailView(
-                        transaction: transaction
-                    )
-                }
-                .task {
-                    await viewModel.load()
-                }
-        }
+        content
+            .navigationTitle("Transactions")
+            .navigationDestination(
+                item: $viewModel.selectedTransaction
+            ) { transaction in
+                TransactionDetailView(
+                    transaction: transaction
+                )
+            }
+            .task {
+                await viewModel.load()
+            }
     }
+    
     // MARK: - View Builder
+    
     @ViewBuilder
     private var content: some View {
         switch viewModel.state {
@@ -69,8 +77,6 @@ struct TransactionListView: View {
         }
     }
 }
-
-
 
 #Preview {
     TransactionListView(repo: DI.Preview.transRepo)

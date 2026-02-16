@@ -10,7 +10,13 @@ import XCTest
 
 @MainActor
 final class TransactionDecodingTests: XCTestCase {
-
+    /// TC-01
+    /// Verifies that a valid transaction-list.json file
+    /// decodes successfully into TransactionResponse.
+    /// Ensures:
+    /// - All transactions are parsed
+    /// - Transaction types map correctly to enum
+    /// - postedDate is decoded using expected date strategy.
     func test_TC01_decodeValidJSON_success() throws {
         // Given
         let bundle = Bundle(for: Self.self)
@@ -31,7 +37,7 @@ final class TransactionDecodingTests: XCTestCase {
         let response = try decoder.decode(TransactionResponse.self, from: data)
 
         // Then
-        XCTAssertEqual(response.transactions.count, 3)
+        XCTAssertEqual(response.transactions.count, 33)
         XCTAssertEqual(response.transactions.first?.type, .debit)
         XCTAssertEqual(response.transactions.last?.type, .credit)
 
@@ -43,6 +49,12 @@ final class TransactionDecodingTests: XCTestCase {
         XCTAssertEqual(components.month, 5)
         XCTAssertEqual(components.day, 31)
     }
+    
+    /// TC-02
+    /// Ensures that decoding fails when the date format
+    /// does not match the configured DateFormatter ("yyyy-MM-dd").
+    /// Confirms dateDecodingStrategy is strictly enforced.
+
     func test_TC02_invalidDateFormat_shouldThrow() {
         let json = """
         {
@@ -68,6 +80,12 @@ final class TransactionDecodingTests: XCTestCase {
 
         XCTAssertThrowsError(try decoder.decode(TransactionResponse.self, from: data))
     }
+    
+    /// TC-03
+    /// Validates that a missing "description" field
+    /// does not break decoding and is safely mapped as nil.
+    /// Confirms optional handling in Transaction model.
+
     func test_TC03_missingDescription_shouldBeNil() throws {
         let bundle = Bundle(for: Self.self)
         let url = bundle.url(forResource: "transaction-list", withExtension: "json")!
