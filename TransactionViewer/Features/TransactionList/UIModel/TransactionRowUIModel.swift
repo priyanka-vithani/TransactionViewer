@@ -22,4 +22,8 @@ struct TransactionRowUIModel: Identifiable {
     let formattedDate: String
     let fromAccount: String
     let maskedCardNumber: String
+    
+    var hasDescription: Bool {
+        !description.isEmpty
+    }
 }

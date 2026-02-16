@@ -28,7 +28,7 @@ struct TransactionRowMapper: TransactionRowMapping {
             description: transaction.description ?? "",
             formattedAmount: AppCurrencyFormatter.string(from: transaction.amount),
             iconColor: transaction.type.iconColor,
-            formattedDate: AppDateFormatter.display.string(from: transaction.postedDate),
+            formattedDate: AppDateFormatter.display.string(from: transaction.postedDate) + " • ",
             fromAccount: transaction.fromAccount,
             maskedCardNumber: CardMasking.masked(transaction.fromCardNumber)
         )

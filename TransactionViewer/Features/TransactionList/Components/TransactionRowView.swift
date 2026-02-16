@@ -23,11 +23,12 @@ struct TransactionRowView: View {
                 .foregroundColor(transaction.iconColor)
             VStack(alignment: .leading){
                 Text(transaction.merchantName).multilineTextAlignment(.leading)
-                Text(transaction.maskedCardNumber).font(.caption).foregroundStyle(.secondary)
-                HStack{
+                if transaction.hasDescription{
                     Text(transaction.description).font(.subheadline).foregroundStyle(.secondary)
-                    Text("•")
+                }
+                HStack{
                     Text(transaction.formattedDate).font(.caption).foregroundStyle(.secondary)
+                    Text(transaction.maskedCardNumber).font(.caption).foregroundStyle(.secondary)
                 }
             }
             Spacer(minLength: 16)
